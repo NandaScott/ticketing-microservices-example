@@ -1,3 +1,3 @@
-export default () => {
-  return <h1>Banana</h1>;
-};
+export default function Banana() {
+  return <h1>Banana2</h1>;
+}
