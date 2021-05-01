@@ -26,7 +26,8 @@ export default function useRequest({ url, method, body }) {
   };
 
   const MiscErrors = () => {
-    if (getMiscErrors().length === 0) return null;
+    const miscErrors = getMiscErrors();
+    if (miscErrors.length === 0) return null;
     return (
       <div className="alert alert-danger">
         <h4>Oops</h4>
@@ -58,15 +59,13 @@ export default function useRequest({ url, method, body }) {
   };
 
   const doRequest = () => {
-    return axios({ url, method: method.toLowerCase(), data: body })
-      .then((resp) => {
-        return resp;
-      })
-      .catch((err) => {
+    return axios({ url, method: method.toLowerCase(), data: body }).catch(
+      (err) => {
         setErrors(err.response.data.errors);
         setIsErrored(true);
         throw err;
-      });
+      }
+    );
   };
 
   return {

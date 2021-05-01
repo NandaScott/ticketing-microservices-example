@@ -7,7 +7,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const { doRequest, errorStyling, ErrorHelpText, MiscErrors } = useRequest({
     url: '/api/users/signup',
-    method: 'post',
+    method: 'POST',
     body: { email, password },
   });
 
