@@ -1,5 +1,6 @@
-import nats, { Message } from 'node-nats-streaming';
+import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
+import { TicketCreatedListener } from './events/ticket-created-listener';
 
 console.clear();
 
@@ -10,25 +11,12 @@ const client = nats.connect('docker-desktop', randomBytes(4).toString('hex'), {
 client.on('connect', () => {
   console.log('Listener connected to NATS');
 
-  const options = client
-    .subscriptionOptions()
-    .setManualAckMode(true)
-    .setDeliverAllAvailable()
-    .setDurableName('orders-service');
-
-  const subscription = client.subscribe(
-    'ticket:created',
-    'listenerQueueGroup',
-    options
-  );
-
-  subscription.on('message', (msg: Message) => {
-    const data = msg.getData();
-    const subject = msg.getSubject();
-    const num = msg.getSequence();
-    console.log(num, 'Message received on', subject, data);
-    msg.ack();
+  client.on('close', () => {
+    console.log('NATS connection closed!');
+    process.exit();
   });
+
+  new TicketCreatedListener(client).listen();
 });
 
 process.on('SIGINT', () => client.close());
