@@ -10,7 +10,12 @@ const client = nats.connect('docker-desktop', randomBytes(4).toString('hex'), {
 client.on('connect', () => {
   console.log('Listener connected to NATS');
 
-  const options = client.subscriptionOptions().setManualAckMode(true);
+  const options = client
+    .subscriptionOptions()
+    .setManualAckMode(true)
+    .setDeliverAllAvailable()
+    .setDurableName('orders-service');
+
   const subscription = client.subscribe(
     'ticket:created',
     'listenerQueueGroup',
