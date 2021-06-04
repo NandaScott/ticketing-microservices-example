@@ -30,3 +30,6 @@ client.on('connect', () => {
     msg.ack();
   });
 });
+
+process.on('SIGINT', () => client.close());
+process.on('SIGTERM', () => client.close());
